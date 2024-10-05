@@ -8,7 +8,7 @@ st.title("Sales and Customer Analysis Dashboard")
 st.write("This dashboard provides insights into sales performance, customer demographics, and product preferences.")
 
 # Load the data
-all_df = pd.read_csv("/Users/mahezayudistia/Movies/Analisis Data Dicoding/dashboard/all_data.csv")
+all_df = pd.read_csv("dashboard/all_data.csv")
 
 # Sidebar for filtering
 st.sidebar.header("Filters")
