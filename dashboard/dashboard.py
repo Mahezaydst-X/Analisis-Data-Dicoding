@@ -8,7 +8,7 @@ st.title("Sales and Customer Analysis Dashboard")
 st.write("This dashboard provides insights into sales performance, customer demographics, and product preferences.")
 
 # Load the data
-all_df = pd.read_csv("all_data.csv")
+all_df = pd.read_csv("/Users/mahezayudistia/Movies/Analisis Data Dicoding/dashboard/all_data.csv")
 
 # Sidebar for filtering
 st.sidebar.header("Filters")
@@ -86,6 +86,7 @@ st.bar_chart(state_distribution.set_index("state"))
 # RFM Analysis
 st.subheader("RFM Analysis")
 
+# Calculate RFM metrics
 rfm_df = all_df.groupby('customer_id').agg({
     'order_date': 'max',
     'order_id': 'nunique',
@@ -97,13 +98,20 @@ rfm_df['recency'] = (pd.to_datetime(all_df['order_date'].max()) - pd.to_datetime
 
 # Plot top 5 customers by recency, frequency, and monetary
 fig, ax = plt.subplots(1, 3, figsize=(18, 5))
-sns.barplot(x=rfm_df.sort_values(by='recency', ascending=True).head(5)['recency'], 
-            y=rfm_df.sort_values(by='recency', ascending=True).head(5)['customer_id'], ax=ax[0], palette='Blues_d')
+
+# Top 5 Customers by Recency
+top_recency = rfm_df.sort_values(by='recency', ascending=True).head(5)
+sns.barplot(x=top_recency['recency'], y=top_recency['customer_id'], ax=ax[0], palette='Blues_d')
 ax[0].set_title("Top 5 Customers by Recency")
-sns.barplot(x=rfm_df.sort_values(by='order_id', ascending=False).head(5)['order_id'], 
-            y=rfm_df.sort_values(by='order_id', ascending=False).head(5)['customer_id'], ax=ax[1], palette='Greens_d')
+
+# Top 5 Customers by Frequency
+top_frequency = rfm_df.sort_values(by='order_id', ascending=False).head(5)
+sns.barplot(x=top_frequency['order_id'], y=top_frequency['customer_id'], ax=ax[1], palette='Greens_d')
 ax[1].set_title("Top 5 Customers by Frequency")
-sns.barplot(x=rfm_df.sort_values(by='total_price', ascending=False).head(5)['total_price'], 
-            y=rfm_df.sort_values(by='total_price', ascending=False).head(5)['customer_id'], ax=ax[2], palette='Reds_d')
+
+# Top 5 Customers by Monetary Value
+top_monetary = rfm_df.sort_values(by='total_price', ascending=False).head(5)
+sns.barplot(x=top_monetary['total_price'], y=top_monetary['customer_id'], ax=ax[2], palette='Reds_d')
 ax[2].set_title("Top 5 Customers by Monetary Value")
+
 st.pyplot(fig)
